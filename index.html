@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Link Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #1a1a1a;
+            min-height: 100vh;
+            min-height: 100svh; /* Better mobile viewport handling */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            touch-action: manipulation; /* Prevents zoom on double tap */
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 25px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .profile {
+            margin-bottom: 30px;
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #333;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            font-weight: bold;
+            overflow: hidden;
+        }
+
+        .profile-image img {
+            width: 85%;
+            height: 85%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .profile h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .profile p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.4;
+            margin-bottom: 5px;
+        }
+
+        .links {
+            list-style: none;
+        }
+
+        .link-item {
+            margin-bottom: 12px;
+        }
+
+        .link-button {
+            display: flex;
+            width: 100%;
+            height: 60px; /* Fixed height for all buttons */
+            padding: 18px 20px;
+            background: #f8f8f8;
+            color: #333;
+            text-decoration: none;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent; /* Remove blue highlight on tap */
+            user-select: none;
+            box-sizing: border-box; /* Include border in height calculation */
+        }
+
+        .link-button .icon {
+            position: absolute;
+            left: 20px;
+        }
+
+        .link-button .button-text {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        .link-button:hover:not(.clicked) {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border-color: #333;
+            background: #333;
+            color: white;
+        }
+
+        .link-button:active {
+            transform: translateY(0);
+            transition: all 0.1s ease;
+        }
+
+        .link-button.clicked {
+            background: #555;
+            color: white;
+            border-color: #555;
+            transform: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .link-button.force-reset {
+            background: #f8f8f8 !important;
+            color: #333 !important;
+            border-color: #e0e0e0 !important;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Mobile-specific touch interactions */
+        @media (hover: none) and (pointer: coarse) {
+            .link-button:hover:not(.clicked) {
+                transform: none;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+            
+            .link-button:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+                background: #333;
+                color: white;
+                border-color: #333;
+            }
+        }
+
+        .link-button .icon {
+            margin-right: 8px;
+            font-size: 20px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+        }
+
+        .link-button .icon img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            vertical-align: middle;
+        }
+
+        .linkedin .icon img {
+            width: 38px;
+            height: 38px;
+            transform: translateX(-2px);
+        }
+
+        .portfolio .icon img {
+            transform: translateX(3px);
+        }
+
+        .whatsapp .icon img {
+            transform: translateX(3px);
+        }
+
+        /* Unified black hover effect for all buttons */
+        .portfolio:hover:not(.clicked), .portfolio:active,
+        .linkedin:hover:not(.clicked), .linkedin:active,
+        .whatsapp:hover:not(.clicked), .whatsapp:active,
+        .email:hover:not(.clicked), .email:active,
+        .call:hover:not(.clicked), .call:active {
+            background: #333;
+            color: white;
+            border-color: #333;
+        }
+
+        /* White logo hover effects for all buttons */
+        .portfolio:hover:not(.clicked) .icon img,
+        .portfolio:active .icon img {
+            content: url('assets/Portfolio logo white.png');
+        }
+
+        .linkedin:hover:not(.clicked) .icon img,
+        .linkedin:active .icon img {
+            content: url('assets/Linkedin logo white.png');
+        }
+
+        .whatsapp:hover:not(.clicked) .icon img,
+        .whatsapp:active .icon img {
+            content: url('assets/Whatsapp logo white.png');
+        }
+
+        .email:hover:not(.clicked) .icon img,
+        .email:active .icon img {
+            content: url('assets/Mail logo white.png');
+        }
+
+        .call:hover:not(.clicked) .icon img,
+        .call:active .icon img {
+            content: url('assets/Phone logo white.png');
+        }
+
+        .footer {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #999;
+            font-size: 13px;
+        }
+
+        /* Mobile-first responsive design */
+        @media (max-width: 480px) {
+            body {
+                padding: 20px 15px;
+                align-items: center;
+            }
+            
+            .container {
+                padding: 20px 18px;
+                margin: 0;
+                border-radius: 16px;
+                max-width: 340px;
+                width: calc(100% - 30px);
+            }
+            
+            .profile {
+                margin-bottom: 20px;
+            }
+            
+            .profile-image {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+                margin-bottom: 12px;
+            }
+
+            .profile-image img {
+                width: 85%;
+                height: 85%;
+                object-fit: cover;
+                border-radius: 50%;
+            }
+            
+            .profile h1 {
+                font-size: 20px;
+                margin-bottom: 5px;
+            }
+            
+            .profile p {
+                font-size: 13px;
+                line-height: 1.3;
+            }
+            
+            .link-item {
+                margin-bottom: 8px;
+            }
+            
+            .link-button {
+                padding: 14px 16px;
+                font-size: 14px;
+                height: 52px; /* Fixed height for mobile */
+                border-radius: 10px;
+            }
+            
+            .link-button .icon {
+                font-size: 16px;
+                margin-right: 6px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .link-button .icon img {
+                width: 24px;
+                height: 24px;
+                vertical-align: middle;
+            }
+
+            .linkedin .icon img {
+                width: 33px;
+                height: 33px;
+                transform: translateX(-2px);
+            }
+
+            /* Mobile white logo hover effects */
+            .portfolio .icon img {
+                transform: translateX(3px);
+            }
+
+            .portfolio:hover:not(.clicked) .icon img,
+            .portfolio:active .icon img {
+                content: url('assets/Portfolio logo white.png');
+                width: 24px;
+                height: 24px;
+                transform: translateX(3px);
+            }
+
+            .linkedin:hover:not(.clicked) .icon img,
+            .linkedin:active .icon img {
+                content: url('assets/Linkedin logo white.png');
+                width: 33px;
+                height: 33px;
+                transform: translateX(-2px);
+            }
+
+            .whatsapp .icon img {
+                transform: translateX(3px);
+            }
+
+            .whatsapp:hover:not(.clicked) .icon img,
+            .whatsapp:active .icon img {
+                content: url('assets/Whatsapp logo white.png');
+                width: 24px;
+                height: 24px;
+                transform: translateX(3px);
+            }
+
+            .email:hover:not(.clicked) .icon img,
+            .email:active .icon img {
+                content: url('assets/Mail logo white.png');
+                width: 24px;
+                height: 24px;
+            }
+
+            .call:hover:not(.clicked) .icon img,
+            .call:active .icon img {
+                content: url('assets/Phone logo white.png');
+                width: 24px;
+                height: 24px;
+            }
+            
+            .footer {
+                margin-top: 18px;
+                padding-top: 12px;
+                font-size: 11px;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 360px) {
+            body {
+                padding: 15px 10px;
+            }
+            
+            .container {
+                padding: 18px 15px;
+                max-width: 320px;
+                width: calc(100% - 20px);
+            }
+            
+            .profile-image {
+                width: 70px;
+                height: 70px;
+                font-size: 28px;
+            }
+            
+            .link-button {
+                padding: 12px 14px;
+                font-size: 13px;
+                height: 48px; /* Fixed height for small screens */
+            }
+            
+            .link-button .icon {
+                font-size: 15px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .link-button .icon img {
+                width: 22px;
+                height: 22px;
+                vertical-align: middle;
+            }
+
+            .linkedin .icon img {
+                width: 31px;
+                height: 31px;
+                transform: translateX(-2px);
+            }
+
+            /* Small screen white logo hover effects */
+            .portfolio .icon img {
+                transform: translateX(3px);
+            }
+
+            .portfolio:hover:not(.clicked) .icon img,
+            .portfolio:active .icon img {
+                content: url('assets/Portfolio logo white.png');
+                width: 22px;
+                height: 22px;
+                transform: translateX(3px);
+            }
+
+            .linkedin:hover:not(.clicked) .icon img,
+            .linkedin:active .icon img {
+                content: url('assets/Linkedin logo white.png');
+                width: 31px;
+                height: 31px;
+                transform: translateX(-2px);
+            }
+
+            .whatsapp .icon img {
+                transform: translateX(3px);
+            }
+
+            .whatsapp:hover:not(.clicked) .icon img,
+            .whatsapp:active .icon img {
+                content: url('assets/Whatsapp logo white.png');
+                width: 22px;
+                height: 22px;
+                transform: translateX(3px);
+            }
+
+            .email:hover:not(.clicked) .icon img,
+            .email:active .icon img {
+                content: url('assets/Mail logo white.png');
+                width: 22px;
+                height: 22px;
+            }
+
+            .call:hover:not(.clicked) .icon img,
+            .call:active .icon img {
+                content: url('assets/Phone logo white.png');
+                width: 22px;
+                height: 22px;
+            }
+        }
+
+        /* Landscape orientation on mobile */
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                padding: 15px;
+                align-items: center;
+            }
+            
+            .container {
+                padding: 15px 18px;
+                max-width: 320px;
+            }
+            
+            .profile {
+                margin-bottom: 15px;
+            }
+            
+            .profile-image {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+                margin-bottom: 8px;
+            }
+
+            .profile-image img {
+                width: 85%;
+                height: 85%;
+                object-fit: cover;
+                border-radius: 50%;
+            }
+            
+            .profile h1 {
+                font-size: 18px;
+            }
+            
+            .profile p {
+                font-size: 12px;
+            }
+            
+            .link-item {
+                margin-bottom: 6px;
+            }
+            
+            .link-button {
+                padding: 10px 14px;
+                height: 44px; /* Fixed height for landscape */
+                font-size: 13px;
+            }
+            
+            .footer {
+                margin-top: 12px;
+                padding-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile">
+            <div class="profile-image">
+                <img src="assets/Profile pic.png" alt="Profile Picture">
+            </div>
+            <h1>Yassein Abdelkawy</h1>
+            <p>Welcome to my Link Hub — everything you need to view my work and contact me in one place.</p>
+        </div>
+
+        <ul class="links">
+            <li class="link-item">
+                <a href="https://www.yassinamin.com" class="link-button portfolio" target="_blank">
+                    <span class="icon"><img src="assets/Portfolio logo.png" alt="Portfolio"></span>
+                    <span class="button-text">Portfolio</span>
+                </a>
+            </li>
+            
+            <li class="link-item">
+                <a href="https://www.linkedin.com/in/yasseinabdelkawy/" class="link-button linkedin" target="_blank">
+                    <span class="icon"><img src="assets/linkedin logo.png" alt="LinkedIn"></span>
+                    <span class="button-text">LinkedIn</span>
+                </a>
+            </li>
+            
+            <li class="link-item">
+                <a href="https://wa.me/message/2WZRG66PRXP6H1" class="link-button whatsapp" target="_blank">
+                    <span class="icon"><img src="assets/Whatsapp logo.png" alt="WhatsApp"></span>
+                    <span class="button-text">WhatsApp</span>
+                </a>
+            </li>
+            
+            <li class="link-item">
+                <a href="mailto:yassinamincs@gmail.com" class="link-button email">
+                    <span class="icon"><img src="assets/Mail logo.png" alt="Email"></span>
+                    <span class="button-text">Email</span>
+                </a>
+            </li>
+            
+            <li class="link-item">
+                <a href="tel:+971509937517" class="link-button call">
+                    <span class="icon"><img src="assets/Phone logo.png" alt="Call"></span>
+                    <span class="button-text">Call</span>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+    <script>
+        // Mobile-specific fix for sticky touch states
+        document.addEventListener('DOMContentLoaded', function() {
+            const linkButtons = document.querySelectorAll('.link-button');
+            
+            function clearAllMobileStates() {
+                linkButtons.forEach(button => {
+                    // Remove focus and active states
+                    button.blur();
+                    button.classList.remove('clicked');
+                    
+                    // Force remove any stuck mobile states
+                    button.style.removeProperty('background');
+                    button.style.removeProperty('color');
+                    button.style.removeProperty('border-color');
+                    button.style.removeProperty('transform');
+                    button.style.removeProperty('box-shadow');
+                    
+                    // Add temporary class to force reset
+                    button.classList.add('force-reset');
+                    setTimeout(() => {
+                        button.classList.remove('force-reset');
+                    }, 10);
+                });
+            }
+            
+            // Mobile-specific events for when returning to page
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    // Clear immediately and after a delay for mobile
+                    clearAllMobileStates();
+                    setTimeout(clearAllMobileStates, 100);
+                }
+            });
+            
+            // Handle page show (back button on mobile)
+            window.addEventListener('pageshow', function(event) {
+                clearAllMobileStates();
+            });
+            
+            // Handle each button for mobile touch
+            linkButtons.forEach(button => {
+                // Touch start - prepare for touch
+                button.addEventListener('touchstart', function() {
+                    // Clear all other buttons
+                    linkButtons.forEach(btn => {
+                        if (btn !== this) {
+                            btn.blur();
+                            btn.classList.remove('clicked');
+                        }
+                    });
+                });
+                
+                // Touch end - clean up after touch
+                button.addEventListener('touchend', function() {
+                    // Immediate cleanup
+                    setTimeout(() => {
+                        this.blur();
+                        this.classList.remove('clicked');
+                    }, 50);
+                });
+                
+                // Click handler for mobile
+                button.addEventListener('click', function() {
+                    // Add brief visual feedback
+                    this.classList.add('clicked');
+                    
+                    // Quick cleanup for mobile
+                    setTimeout(() => {
+                        this.blur();
+                        this.classList.remove('clicked');
+                    }, 100);
+                });
+            });
+            
+            // Global touch handler to clear states
+            document.addEventListener('touchstart', function(e) {
+                if (!e.target.closest('.link-button')) {
+                    // Touched outside buttons, clear all states
+                    clearAllMobileStates();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
