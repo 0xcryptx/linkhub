@@ -227,6 +227,7 @@
 
         /* Unified black hover effect for all buttons */
         .portfolio:hover:not(.clicked), .portfolio:active,
+        .buildyourweb:hover:not(.clicked), .buildyourweb:active,
         .linkedin:hover:not(.clicked), .linkedin:active,
         .whatsapp:hover:not(.clicked), .whatsapp:active,
         .email:hover:not(.clicked), .email:active,
@@ -240,6 +241,20 @@
         .portfolio:hover:not(.clicked) .icon img,
         .portfolio:active .icon img {
             content: url('assets/Portfolio logo white.png');
+        }
+
+        .buildyourweb .icon img {
+            filter: none;
+        }
+
+        .buildyourweb:hover:not(.clicked) .icon img,
+        .buildyourweb:active .icon img {
+            /* Outline that follows the PNG's alpha edges */
+            filter:
+                drop-shadow(1px 0 0 rgba(255, 255, 255, 0.95))
+                drop-shadow(-1px 0 0 rgba(255, 255, 255, 0.95))
+                drop-shadow(0 1px 0 rgba(255, 255, 255, 0.95))
+                drop-shadow(0 -1px 0 rgba(255, 255, 255, 0.95));
         }
 
         .linkedin:hover:not(.clicked) .icon img,
@@ -559,6 +574,13 @@
                 <a href="https://www.yassinamin.com" class="link-button portfolio" target="_blank">
                     <span class="icon"><img src="assets/Portfolio logo.png" alt="Portfolio"></span>
                     <span class="button-text">Portfolio</span>
+                </a>
+            </li>
+
+            <li class="link-item">
+                <a href="https://buildyourweb.ae" class="link-button buildyourweb" target="_blank">
+                    <span class="icon"><img src="assets/BYW Logo.png" alt="Build Your Web"></span>
+                    <span class="button-text">Build Your Web</span>
                 </a>
             </li>
             
