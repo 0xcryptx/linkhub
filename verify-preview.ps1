@@ -1,9 +1,9 @@
 # Verify link preview metadata - run after deploying to production
 # Simulates Snapchat-like crawler checks for page and og:image
 
-$BaseUrl = "https://www.yassinamin.com"
+$BaseUrl = "https://yassin.buildyourweb.ae"
 $PageUrl = "$BaseUrl/"
-$ImageUrl = "$BaseUrl/assets/og-preview.png?v=2"
+$ImageUrl = "$BaseUrl/assets/og-preview.png"
 $UserAgent = "Mozilla/5.0 (compatible; Snapchat; +https://www.snap.com)"
 
 Write-Host "=== 1. Page URL (HTTP status, redirects) ===" -ForegroundColor Cyan

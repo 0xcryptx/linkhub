@@ -2,9 +2,9 @@
 # Verify link preview metadata - run after deploying to production
 # Simulates Snapchat-like crawler checks for page and og:image
 
-BASE_URL="https://www.yassinamin.com"
+BASE_URL="https://yassin.buildyourweb.ae"
 PAGE_URL="${BASE_URL}/"
-IMAGE_URL="${BASE_URL}/assets/og-preview.png?v=2"
+IMAGE_URL="${BASE_URL}/assets/og-preview.png"
 UA="Mozilla/5.0 (compatible; Snapchat; +https://www.snap.com)"
 
 echo "=== 1. Page URL (HTTP status, redirects, content-type) ==="
